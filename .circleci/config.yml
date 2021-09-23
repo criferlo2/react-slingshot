@@ -41,7 +41,7 @@ workflows:
       - welcome/run
       - build
       - test
-        requires: build
+          requires: build
       - analyze
-        requires: test
+          requires: test
       
