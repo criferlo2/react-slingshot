@@ -40,10 +40,10 @@ workflows:
     jobs:
       - welcome/run
       - build
-      - test
+      - test:
           requires: 
             - build
-      - analyze
+      - analyze:
           requires: 
             - test
       
