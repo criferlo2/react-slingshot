@@ -2,48 +2,26 @@
 version: 2.1
 orbs:
   welcome: circleci/welcome-orb@0.4.1
-commands:
-  print_pipeline_id:
-    steps:
-      - run: echo ${CODER_NAME}
+  aws-cli: circleci/aws-cli@2.0.3
 
 jobs:
-  build:
+  create_infrastructure:
     docker:
-      - image: circleci/node:13.8.0
+      - image: amazon/aws-cli
     steps:
       - checkout
-      - run: npm i 
-      - run: npm run lint
-  test:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run: npm i 
-      - run: npm run test
-  analyze:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run: npm audit
       - run:
-          name: on error
-          command: echo "Hello Error"
-          when: on_fail
-    
-  
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-east-1
 
+    
 workflows:
   welcome:
     jobs:
       - welcome/run
-      - build
-      - test:
-          requires: 
-            - build
-      - analyze:
-          requires: 
-            - test
+      - create_infrastructure
       
