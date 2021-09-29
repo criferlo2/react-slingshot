@@ -41,6 +41,7 @@ jobs:
               --region us-east-1
       - run: 
           command: return 1
+      - destroy_environment
   
   configure_infrastructure:
     docker:
